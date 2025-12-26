@@ -20,7 +20,6 @@ public class LibraryService {
     this.bookRepository = bookRepository;
     this.memberRepository = memberRepository;
   }
-
   public Result borrowBook(String bookId, String memberId) {
     Optional<Book> book = bookRepository.findById(bookId);
     if (book.isEmpty()) {
@@ -33,6 +32,11 @@ public class LibraryService {
       return Result.failure("BORROW_LIMIT");
     }
     Book entity = book.get();
+
+    if (entity.getLoanedTo() != null) {
+      return Result.failure("BOOK_ALREADY_LOANED");
+    }
+
     entity.setLoanedTo(memberId);
     entity.setDueDate(LocalDate.now().plusDays(DEFAULT_LOAN_DAYS));
     bookRepository.save(entity);
@@ -46,6 +50,11 @@ public class LibraryService {
     }
 
     Book entity = book.get();
+
+    if(!entity.getLoanedTo().equals(memberId)){
+      return ResultWithNext.failure();
+    }
+
     entity.setLoanedTo(null);
     entity.setDueDate(null);
     String nextMember =
