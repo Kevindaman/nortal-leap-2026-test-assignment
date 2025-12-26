@@ -37,6 +37,15 @@ public class LibraryService {
       return Result.failure("BOOK_ALREADY_LOANED");
     }
 
+    if(entity.getReservationQueue().size() > 0){
+      if(!entity.getReservationQueue().get(0).equals(memberId)){
+        return Result.failure("NOT_HEAD_OF_RESERVATION_QUEUE");
+      }
+      else{
+        entity.getReservationQueue().remove(0);
+      }
+    }
+
     entity.setLoanedTo(memberId);
     entity.setDueDate(LocalDate.now().plusDays(DEFAULT_LOAN_DAYS));
     bookRepository.save(entity);
