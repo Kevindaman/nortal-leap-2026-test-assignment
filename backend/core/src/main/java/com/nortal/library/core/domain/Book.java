@@ -28,10 +28,10 @@ public class Book {
   private String title;
 
   @Column(name = "loaned_to")
-  private String loanedTo;
+  private String loanedTo = null;
 
   @Column(name = "due_date")
-  private  LocalDate dueDate;
+  private LocalDate dueDate;
 
   @ElementCollection
   @CollectionTable(name = "book_reservations", joinColumns = @JoinColumn(name = "book_id"))
@@ -43,7 +43,4 @@ public class Book {
     this.id = id;
     this.title = title;
   }
-
-  
-  
 }
